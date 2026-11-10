@@ -177,53 +177,65 @@ export const StudioContractsManager: React.FC<StudioContractsManagerProps> = ({ 
       }
 
       doc.setDrawColor(226, 232, 240);
+      doc.setLineWidth(0.4);
       doc.line(15, currentY, 195, currentY);
       currentY += 6;
 
-      // Box 1: Contratado
-      doc.setFillColor(250, 250, 250);
-      doc.roundedRect(15, currentY, 86, 28, 2, 2, 'FD');
+      // Box 1: Contratado (Fotógrafo) - Crisp light background with thick teal accent
+      doc.setFillColor(248, 250, 252);
+      doc.setDrawColor(203, 213, 225);
+      doc.roundedRect(15, currentY, 86, 29, 2, 2, 'FD');
+      // Signature teal top accent bar
+      doc.setFillColor(13, 148, 136); // Teal 600
+      doc.rect(15, currentY, 86, 1.2, 'F');
+
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(7.5);
       doc.setTextColor(100, 116, 139);
-      doc.text("CONTRATADO / FOTÓGRAFO", 18, currentY + 6);
+      doc.text("CONTRATADO / FOTÓGRAFO", 19, currentY + 7);
       doc.setFont('times', 'italic');
-      doc.setFontSize(13);
-      doc.setTextColor(15, 23, 42);
-      doc.text("Carlos 'Cadu' Eduardo", 18, currentY + 15);
+      doc.setFontSize(13.5);
+      doc.setTextColor(15, 23, 42); // Crisp dark slate 900
+      doc.text("Carlos 'Cadu' Eduardo", 19, currentY + 16);
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7);
-      doc.setTextColor(100, 116, 139);
-      doc.text("Cadu's Fotos Studio • CNPJ: 45.892.102/0001-44", 18, currentY + 22);
+      doc.setTextColor(71, 85, 105);
+      doc.text("Cadu's Fotos Studio | CNPJ: 45.892.102/0001-44", 19, currentY + 23);
 
-      // Box 2: Contratante
-      doc.roundedRect(109, currentY, 86, 28, 2, 2, 'FD');
+      // Box 2: Contratante(s) - Explicit crisp light background and high contrast
+      doc.setFillColor(248, 250, 252);
+      doc.setDrawColor(203, 213, 225);
+      doc.roundedRect(109, currentY, 86, 29, 2, 2, 'FD');
+      // Signature teal top accent bar
+      doc.setFillColor(13, 148, 136); // Teal 600
+      doc.rect(109, currentY, 86, 1.2, 'F');
+
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(7.5);
       doc.setTextColor(100, 116, 139);
-      doc.text("CONTRATANTE(S)", 112, currentY + 6);
+      doc.text("CONTRATANTE(S)", 113, currentY + 7);
 
       if (isAssinado) {
         doc.setFont('times', 'italic');
-        doc.setFontSize(13);
-        doc.setTextColor(13, 148, 136); // Teal
-        doc.text(signatureText, 112, currentY + 15);
+        doc.setFontSize(13.5);
+        doc.setTextColor(15, 23, 42); // High legibility dark charcoal/black
+        doc.text(signatureText, 113, currentY + 16);
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(7);
-        doc.setTextColor(5, 150, 105); // Green
-        doc.text(`✓ Assinado Eletronicamente em ${signedDate}`, 112, currentY + 20);
+        doc.setTextColor(4, 120, 87); // Deep emerald 700
+        doc.text(`[ASSINADO ELETRONICAMENTE] ${signedDate}`, 113, currentY + 21.5);
         doc.setFont('courier', 'normal');
         doc.setFontSize(6.5);
-        doc.setTextColor(100, 116, 139);
-        doc.text(`IP: ${signerIp}`, 112, currentY + 24);
+        doc.setTextColor(71, 85, 105); // Slate 600
+        doc.text(`IP de Auditoria: ${signerIp}`, 113, currentY + 25.5);
       } else {
         doc.setFont('helvetica', 'italic');
         doc.setFontSize(8.5);
-        doc.setTextColor(217, 119, 6); // Amber
-        doc.text("Aguardando assinatura do cliente", 112, currentY + 15);
+        doc.setTextColor(217, 119, 6); // Amber 600
+        doc.text("Aguardando assinatura do cliente", 113, currentY + 16);
       }
 
-      currentY += 34;
+      currentY += 35;
 
       // Legal Audit Certificate Box (MP 2.200-2/01)
       if (isAssinado) {
@@ -232,25 +244,28 @@ export const StudioContractsManager: React.FC<StudioContractsManagerProps> = ({ 
           currentY = 20;
         }
 
-        doc.setFillColor(240, 253, 244); // Green 50
-        doc.setDrawColor(16, 185, 129); // Green 500
-        doc.roundedRect(15, currentY, 180, 20, 2, 2, 'FD');
+        doc.setFillColor(240, 253, 244); // Emerald 50
+        doc.setDrawColor(16, 185, 129); // Emerald 500
+        doc.roundedRect(15, currentY, 180, 22, 2, 2, 'FD');
 
         doc.setFont('helvetica', 'bold');
         doc.setFontSize(7.5);
-        doc.setTextColor(6, 78, 59); // Green 900
-        doc.text("✓ CERTIFICADO DE AUTENTICIDADE & AUDITORIA DIGITAL (MP 2.200-2/01 E LEI 14.063/20)", 18, currentY + 5);
+        doc.setTextColor(6, 95, 70); // Deep emerald 800
+        doc.text("CERTIFICADO DE AUTENTICIDADE E AUDITORIA DIGITAL (MP 2.200-2/01 E LEI 14.063/20)", 19, currentY + 5.5);
 
         doc.setFont('helvetica', 'normal');
         doc.setFontSize(7);
-        doc.setTextColor(6, 95, 70);
-        doc.text("Documento com plena eficácia probatória em conformidade com o Marco Civil da Internet (Lei 12.965/14).", 18, currentY + 9.5);
+        doc.setTextColor(51, 65, 85); // Slate 700
+        doc.text("Documento com plena eficácia probatória em conformidade com o Marco Civil da Internet (Lei 12.965/14).", 19, currentY + 10);
 
         doc.setFont('courier', 'bold');
         doc.setFontSize(6.5);
-        doc.setTextColor(4, 120, 87);
-        doc.text(`HASH SHA-256: ${hash}`, 18, currentY + 14);
-        doc.text(`CARIMBO DO TEMPO (BRASÍLIA): ${signedDate} • IP AUDITADO: ${signerIp}`, 18, currentY + 17.5);
+        doc.setTextColor(15, 23, 42); // Crisp dark slate 900
+        doc.text(`HASH SHA-256: ${hash}`, 19, currentY + 14.5);
+        doc.setFont('courier', 'normal');
+        doc.setFontSize(6.5);
+        doc.setTextColor(51, 65, 85);
+        doc.text(`CARIMBO DO TEMPO (BRASILIA): ${signedDate}  |  IP AUDITADO: ${signerIp}`, 19, currentY + 18.5);
       }
 
       // Direct native PDF file download
