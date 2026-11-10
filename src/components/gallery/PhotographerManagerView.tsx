@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Eye, Settings, Heart, MessageSquare, Copy, Check, Download, ShieldCheck, Share2, Sparkles, ExternalLink, Sliders, Save } from 'lucide-react';
+import { Eye, Settings, Heart, MessageSquare, Copy, Check, Download, ShieldCheck, Share2, Sparkles, ExternalLink, Sliders, Save, FolderPlus } from 'lucide-react';
 import { GalleryConfig, GalleryPhoto } from './galleryData';
+import { LightroomExportModal } from './LightroomExportModal';
 
 interface ManagerViewProps {
   config: GalleryConfig;
@@ -17,6 +18,7 @@ export const PhotographerManagerView: React.FC<ManagerViewProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLightroomModalOpen, setIsLightroomModalOpen] = useState(false);
   const [formConfig, setFormConfig] = useState<GalleryConfig>(config);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
@@ -205,30 +207,53 @@ export const PhotographerManagerView: React.FC<ManagerViewProps> = ({
                 </div>
               </div>
 
-              <button
-                onClick={handleCopyLightroom}
-                className="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5" />
-                    <span>Nomes Copiados!</span>
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>Copiar Lista</span>
-                  </>
-                )}
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleCopyLightroom}
+                  className="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center gap-1.5 border border-slate-200 dark:border-white/10 transition-all"
+                  title="Copiar lista de nomes separados por vírgula"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Copiado!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5" />
+                      <span>Copiar</span>
+                    </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsLightroomModalOpen(true)}
+                  className="px-3.5 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all"
+                  title="Abrir Central Avançada e Baixar Coleção Inteligente .lrsmcol"
+                >
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>Central Lr & Coleção</span>
+                </button>
+              </div>
             </div>
 
             <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-white/5 font-mono text-xs text-slate-700 dark:text-slate-300 break-all select-all">
               {lightroomList || 'O cliente ainda não favoritou fotos.'}
             </div>
 
-            <div className="text-[11px] text-slate-500 dark:text-slate-400">
-              💡 <b>Como usar:</b> No Adobe Lightroom Classic, vá no painel de busca da Biblioteca (Filter Bar), selecione <i>Text {'>'} Filename {'>'} Contains</i> e cole a lista. Todas as fotos aprovadas pela Isabela serão filtradas instantaneamente.
+            <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+              <span>
+                💡 <b>Atalho no Lightroom Classic:</b> Pressione a tecla <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border font-mono">\</kbd> (barra invertida) {'>'} Texto {'>'} Nome do Arquivo {'>'} Contém {'>'} Ctrl + V.
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsLightroomModalOpen(true)}
+                className="text-sky-600 dark:text-sky-400 hover:underline font-bold text-[11px] ml-2 flex-shrink-0"
+              >
+                Ver tutorial e baixar .lrsmcol →
+              </button>
             </div>
           </div>
 
@@ -312,6 +337,14 @@ export const PhotographerManagerView: React.FC<ManagerViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Adobe Lightroom Advanced Export Modal */}
+      <LightroomExportModal
+        isOpen={isLightroomModalOpen}
+        onClose={() => setIsLightroomModalOpen(false)}
+        photos={photos}
+        galleryTitle={config.title}
+      />
     </div>
   );
 };
