@@ -1,4 +1,4 @@
-﻿export interface PortfolioCollection {
+export interface PortfolioCollection {
   id: string;
   title: string;
   category: 'casamentos' | 'pre-wedding' | 'familia' | 'destination';
@@ -67,7 +67,7 @@ export const initialPortfolioConfig: PortfolioSiteConfig = {
   instagram: "@cadusfotos",
   email: "contato@cadusfotos.com.br",
   heroImage: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1920&q=85",
-  photographerPhoto: "https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&w=800&q=80"
+  photographerPhoto: "/cadu-diretor.jpg"
 };
 
 export const initialCollections: PortfolioCollection[] = [
