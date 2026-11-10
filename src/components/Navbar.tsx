@@ -143,17 +143,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSimulator, onOpenClientGal
               )}
             </div>
 
-            <a href="#simulador" className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-brand-mint transition-colors flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-teal-600 dark:text-brand-mint animate-pulse" />
-              Simulador
+            <a href="#galerias" className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-brand-mint transition-colors">
+              Galerias
             </a>
 
-            <a href="#calculadora" className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-white transition-colors">
-              Calculadora
+            <a href="#loja" className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-brand-mint transition-colors">
+              Loja & Lab
             </a>
 
-            <a href="#planos" className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-white transition-colors">
-              Planos
+            <a href="#gestao" className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-brand-mint transition-colors">
+              Studio Manager
             </a>
           </div>
 
@@ -275,25 +274,25 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSimulator, onOpenClientGal
                 </button>
               )}
               <a
-                href="#simulador"
+                href="#galerias"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 text-sm text-slate-700 dark:text-slate-300 font-medium"
               >
-                Simulador de Vendas
+                Galerias do Cliente
               </a>
               <a
-                href="#calculadora"
+                href="#loja"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 text-sm text-slate-700 dark:text-slate-300 font-medium"
               >
-                Calculadora de Lucro
+                Loja de Impressões & Álbuns
               </a>
               <a
-                href="#planos"
+                href="#gestao"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 text-sm text-slate-700 dark:text-slate-300 font-medium"
               >
-                Planos & Preços
+                Studio Manager (CRM & Contratos)
               </a>
               <div className="pt-2">
                 <a

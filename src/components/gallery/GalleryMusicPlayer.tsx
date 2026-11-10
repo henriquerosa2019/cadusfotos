@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect, useRef } from 'react';
-import { Volume2, VolumeX, Play, Pause, Music, Disc3 } from 'lucide-react';
+import { Volume2, VolumeX, Play, Pause, Disc3 } from 'lucide-react';
 
 interface MusicPlayerProps {
   trackTitle?: string;
@@ -8,91 +8,91 @@ interface MusicPlayerProps {
 }
 
 export const GalleryMusicPlayer: React.FC<MusicPlayerProps> = ({
-  trackTitle = "Canon in D (Pachelbel) — Trilha Clássica",
-  artist = "Instrumental Romântico de Casamento",
+  trackTitle = "Cinematic Romance — Trilha Instrumental Moderna",
+  artist = "Piano & Cordas Cinematográficas Contemporâneas",
   audioSrc = "/audio/trilha-casamento.mp3"
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
-  const [hasInteracted, setHasInteracted] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Notify listeners (like HeroCover) of play state
-  const notifyState = (playing: boolean) => {
-    setIsPlaying(playing);
-    window.dispatchEvent(new CustomEvent('gallery-audio-state-change', {
-      detail: { isPlaying: playing, isMuted }
-    }));
-  };
-
-  // Initialize and attempt auto-play on gallery entry
+  // Initialize once on mount with empty dependencies
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    audio.volume = 0.55; // Gentle background volume
+    audio.volume = 0.55;
 
-    const attemptPlay = async () => {
-      try {
-        await audio.play();
-        notifyState(true);
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 4500);
-      } catch (err) {
-        // Browser blocked autoplay without user gesture: wait for first interaction
-        notifyState(false);
+    // Direct event sync from native audio element
+    const handleNativePlay = () => {
+      setIsPlaying(true);
+      window.dispatchEvent(new CustomEvent('gallery-audio-state-change', {
+        detail: { isPlaying: true }
+      }));
+    };
+
+    const handleNativePause = () => {
+      setIsPlaying(false);
+      window.dispatchEvent(new CustomEvent('gallery-audio-state-change', {
+        detail: { isPlaying: false }
+      }));
+    };
+
+    audio.addEventListener('play', handleNativePlay);
+    audio.addEventListener('pause', handleNativePause);
+
+    // Attempt auto-play smoothly
+    audio.play().then(() => {
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 4500);
+    }).catch(() => {
+      // Browser blocked autoplay without user gesture: will play on first click/tap
+    });
+
+    // Start on first user interaction if blocked
+    const handleFirstGesture = () => {
+      if (audio && audio.paused) {
+        audio.play().then(() => {
+          setShowToast(true);
+          setTimeout(() => setShowToast(false), 4500);
+        }).catch(() => {});
       }
     };
 
-    attemptPlay();
-
-    // Start on first user interaction if blocked by browser policy
-    const handleFirstInteraction = () => {
-      if (!hasInteracted) {
-        setHasInteracted(true);
-        if (audio && audio.paused) {
-          audio.play().then(() => {
-            notifyState(true);
-            setShowToast(true);
-            setTimeout(() => setShowToast(false), 4500);
-          }).catch(() => {});
-        }
-      }
-    };
-
+    // Toggle listener from HeroCover button
     const handleExternalToggle = () => {
-      togglePlay();
-    };
-
-    window.addEventListener('click', handleFirstInteraction, { once: true });
-    window.addEventListener('keydown', handleFirstInteraction, { once: true });
-    window.addEventListener('gallery-audio-toggle', handleExternalToggle);
-
-    return () => {
-      window.removeEventListener('click', handleFirstInteraction);
-      window.removeEventListener('keydown', handleFirstInteraction);
-      window.removeEventListener('gallery-audio-toggle', handleExternalToggle);
-      if (audio) {
+      if (!audio) return;
+      if (audio.paused) {
+        audio.play().catch(() => {});
+      } else {
         audio.pause();
       }
     };
-  }, [hasInteracted, isPlaying, isMuted]);
+
+    window.addEventListener('click', handleFirstGesture, { once: true });
+    window.addEventListener('keydown', handleFirstGesture, { once: true });
+    window.addEventListener('gallery-audio-toggle', handleExternalToggle);
+
+    return () => {
+      audio.removeEventListener('play', handleNativePlay);
+      audio.removeEventListener('pause', handleNativePause);
+      window.removeEventListener('click', handleFirstGesture);
+      window.removeEventListener('keydown', handleFirstGesture);
+      window.removeEventListener('gallery-audio-toggle', handleExternalToggle);
+      audio.pause();
+    };
+  }, []); // Strictly empty dependency array to prevent play/pause oscillation
 
   const togglePlay = (e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isPlaying) {
-      audio.pause();
-      notifyState(false);
+    if (audio.paused) {
+      audio.play().catch(err => console.warn('Audio play error:', err));
     } else {
-      audio.play().then(() => {
-        notifyState(true);
-      }).catch(err => {
-        console.warn('Playback error:', err);
-      });
+      audio.pause();
     }
   };
 
@@ -103,9 +103,6 @@ export const GalleryMusicPlayer: React.FC<MusicPlayerProps> = ({
 
     audio.muted = !isMuted;
     setIsMuted(!isMuted);
-    window.dispatchEvent(new CustomEvent('gallery-audio-state-change', {
-      detail: { isPlaying, isMuted: !isMuted }
-    }));
   };
 
   return (
@@ -116,11 +113,9 @@ export const GalleryMusicPlayer: React.FC<MusicPlayerProps> = ({
         src={audioSrc}
         loop
         preload="auto"
-        onPlay={() => notifyState(true)}
-        onPause={() => notifyState(false)}
       />
 
-      {/* 1. Floating Sticky Mini-Player (Bottom Left) */}
+      {/* Floating Sticky Mini-Player (Bottom Left) */}
       <div className="fixed bottom-5 left-5 z-40 animate-fade-in">
         <div className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-slate-950/90 hover:bg-slate-950 text-white backdrop-blur-xl border border-white/15 shadow-2xl transition-all duration-300 group hover:border-teal-400/50">
           {/* Animated Play/Pause Button */}
@@ -143,7 +138,7 @@ export const GalleryMusicPlayer: React.FC<MusicPlayerProps> = ({
           {/* Track Details & Animated Equalizer */}
           <div className="flex flex-col cursor-pointer pr-1" onClick={togglePlay}>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold text-white tracking-wide truncate max-w-[180px] sm:max-w-[220px]">
+              <span className="text-[11px] font-bold text-white tracking-wide truncate max-w-[190px] sm:max-w-[240px]">
                 {trackTitle.split('—')[0]}
               </span>
               {/* Equalizer Waveform Bars when playing */}
@@ -157,7 +152,7 @@ export const GalleryMusicPlayer: React.FC<MusicPlayerProps> = ({
               )}
             </div>
             <span className="text-[9px] text-teal-300 font-medium">
-              {isPlaying ? "Trilha Ativa • Clique para pausar" : "Trilha Pausada • Clique para tocar"}
+              {isPlaying ? "Trilha Moderna Ativa • Clique para pausar" : "Trilha Pausada • Clique para tocar"}
             </span>
           </div>
 
@@ -181,8 +176,8 @@ export const GalleryMusicPlayer: React.FC<MusicPlayerProps> = ({
         <div className="fixed top-20 right-6 z-50 p-3.5 rounded-2xl bg-slate-900/95 text-white backdrop-blur-md border border-teal-500/40 shadow-2xl flex items-center gap-3 text-xs animate-bounce">
           <Disc3 className="w-5 h-5 text-teal-400 animate-spin" />
           <div>
-            <p className="font-bold text-white">🎵 Trilha Sonora Iniciada</p>
-            <p className="text-[10px] text-slate-300">Pachelbel - Canon in D (Instrumental)</p>
+            <p className="font-bold text-white">🎵 Trilha Sonora Moderna Ativa</p>
+            <p className="text-[10px] text-slate-300">Cinematic Piano & Ambient Strings</p>
           </div>
         </div>
       )}

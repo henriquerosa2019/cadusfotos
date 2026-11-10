@@ -32,10 +32,10 @@ export const Footer: React.FC = () => {
                 Começar Grátis Agora
               </a>
               <a
-                href="#simulador"
+                href="#galerias"
                 className="px-6 py-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-slate-800 dark:text-white font-bold text-xs border border-slate-200 dark:border-white/10 text-center transition-all"
               >
-                Ver Simulador ao Vivo
+                Ver Galeria de Clientes
               </a>
             </div>
           </div>

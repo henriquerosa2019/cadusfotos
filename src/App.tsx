@@ -5,9 +5,7 @@ import { Hero } from './components/Hero';
 import { ProductTabs } from './components/ProductTabs';
 import { InteractiveStoreSimulator } from './components/InteractiveStoreSimulator';
 import { ProductBentoGrid } from './components/ProductBentoGrid';
-import { ProfitCalculator } from './components/ProfitCalculator';
 import { SocialProof } from './components/SocialProof';
-import { Pricing } from './components/Pricing';
 import { Footer } from './components/Footer';
 import { ClientGalleryPage } from './components/gallery/ClientGalleryPage';
 import { StoreLabPage } from './components/store/StoreLabPage';
@@ -109,9 +107,7 @@ export const MainContent: React.FC = () => {
         <ProductTabs />
         <InteractiveStoreSimulator />
         <ProductBentoGrid />
-        <ProfitCalculator />
         <SocialProof />
-        <Pricing />
       </main>
 
       {/* Footer */}
