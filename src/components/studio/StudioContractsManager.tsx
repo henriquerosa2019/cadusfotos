@@ -404,115 +404,110 @@ export const StudioContractsManager: React.FC<StudioContractsManagerProps> = ({ 
         </button>
       </div>
 
-      {/* Contracts Table List */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Contratos Cadastrados ({contracts.length})
-          </span>
-          <span className="text-xs text-slate-400">
-            Assinatura por toque, celular ou link direto
-          </span>
-        </div>
-
-        <div className="divide-y divide-slate-100">
-          {contracts.map(contract => {
-            const isAssinado = contract.status === 'assinado';
-            return (
-              <div
-                key={contract.id}
-                className="p-5 hover:bg-slate-50/80 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
-              >
-                <div className="flex items-start gap-4">
-                  <div
-                    className={`w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+      {/* Contracts Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {contracts.map(contract => {
+          const isAssinado = contract.status === 'assinado';
+          return (
+            <div
+              key={contract.id}
+              className="p-5 rounded-3xl bg-white border border-slate-200 border-t-4 border-t-teal-600 shadow-sm flex flex-col justify-between space-y-4 hover:border-teal-500 hover:shadow-md transition-all relative overflow-hidden group"
+            >
+              <div className="space-y-3">
+                {/* Header Card with Session Badge & Status */}
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-teal-50 text-teal-900 border-2 border-teal-600 shadow-xs">
+                    {contract.eventType}
+                  </span>
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
                       isAssinado
-                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                        : 'bg-amber-50 text-amber-600 border border-amber-200'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-amber-100 text-amber-800'
                     }`}
                   >
-                    {isAssinado ? <FileCheck className="w-5 h-5" /> : <Clock className="w-5 h-5" />}
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <h4 className="text-sm font-bold text-slate-900">
-                        {contract.clientName}
-                      </h4>
-                      <span
-                        className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                          isAssinado
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-amber-100 text-amber-800'
-                        }`}
-                      >
-                        {isAssinado ? 'Assinado Eletronicamente' : 'Aguardando Assinatura'}
-                      </span>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                      <span>Nº: <b>{contract.contractNumber}</b></span>
-                      <span>•</span>
-                      <span>Evento: <b>{contract.eventType}</b> ({contract.eventDate})</span>
-                      <span>•</span>
-                      <span>Valor: <b className="text-slate-800">R$ {contract.totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</b></span>
-                    </div>
-
-                    {isAssinado && contract.signedAt && (
-                      <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 pt-0.5">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Assinado em {contract.signedAt} • IP: {contract.signerIp}</span>
-                      </div>
-                    )}
-                  </div>
+                    {isAssinado ? '✓ Assinado' : 'Aguardando'}
+                  </span>
                 </div>
 
-                {/* Contract Actions */}
-                <div className="flex items-center gap-2 self-end md:self-center">
-                  <button
-                    onClick={() => setSelectedContract(contract)}
-                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold text-xs flex items-center gap-1.5 transition-colors"
-                  >
-                    <Eye className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Visualizar</span>
-                  </button>
+                {/* Linha verde-azulada mais grossa para destacar o contrato */}
+                <div className="h-1.5 w-full bg-gradient-to-r from-teal-600 via-teal-500 to-teal-300 rounded-full" />
 
-                  {!isAssinado ? (
-                    <>
-                      <button
-                        onClick={() => handleOpenSignature(contract)}
-                        className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-sm"
-                      >
-                        <PenTool className="w-3.5 h-3.5" />
-                        <span>Assinar Agora</span>
-                      </button>
+                <div>
+                  <h4 className="text-base font-bold text-slate-900 leading-snug">
+                    {contract.clientName}
+                  </h4>
+                  <p className="text-xs text-teal-700 font-semibold mt-0.5">
+                    Nº: <b>{contract.contractNumber}</b>
+                  </p>
+                </div>
 
-                      <a
-                        href={getWhatsAppShareLink(contract)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 font-semibold text-xs flex items-center gap-1.5 transition-colors"
-                        title="Enviar link de assinatura via WhatsApp"
-                      >
-                        <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>WhatsApp</span>
-                      </a>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => handleDownloadPdf(contract)}
-                      className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-teal-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-sm"
-                      title="Salvar como PDF ou Imprimir Contrato Oficial"
-                    >
-                      <Download className="w-3.5 h-3.5 text-white" />
-                      <span>Baixar PDF</span>
-                    </button>
+                {/* Values & Date Box */}
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5 text-xs text-slate-700">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500 font-medium">Valor Contratado:</span>
+                    <span className="text-sm font-extrabold text-teal-700">
+                      R$ {contract.totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60">
+                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                    <span>Data do Evento: <b>{contract.eventDate}</b></span>
+                  </div>
+                  {isAssinado && contract.signedAt && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 font-semibold pt-0.5">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Assinado em {contract.signedAt}</span>
+                    </div>
                   )}
                 </div>
               </div>
-            );
-          })}
-        </div>
+
+              {/* Actions */}
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setSelectedContract(contract)}
+                  className="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                >
+                  <Eye className="w-3.5 h-3.5 text-slate-500" />
+                  <span>Visualizar</span>
+                </button>
+
+                {!isAssinado ? (
+                  <>
+                    <button
+                      onClick={() => handleOpenSignature(contract)}
+                      className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <PenTool className="w-3.5 h-3.5" />
+                      <span>Assinar</span>
+                    </button>
+
+                    <a
+                      href={getWhatsAppShareLink(contract)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                      title="Enviar link de assinatura via WhatsApp"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => handleDownloadPdf(contract)}
+                    className="px-3.5 py-1.5 rounded-xl bg-slate-900 hover:bg-teal-600 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-sm"
+                    title="Baixar Contrato Oficial em PDF"
+                  >
+                    <Download className="w-3.5 h-3.5 text-white" />
+                    <span>Baixar PDF</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* MODAL: VISUALIZAR CONTRATO COMPLETO */}

@@ -200,30 +200,37 @@ export const StudioClientsCRM: React.FC<StudioClientsCRMProps> = ({
           return (
             <div
               key={client.id}
-              className="p-5 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between space-y-4 hover:border-teal-500/40 hover:shadow-md transition-all group"
+              className="p-5 rounded-3xl bg-white border border-slate-200 border-t-4 border-t-teal-600 shadow-sm flex flex-col justify-between space-y-4 hover:border-teal-500 hover:shadow-md transition-all relative overflow-hidden group"
             >
               <div className="space-y-3">
-                {/* Header Card */}
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={client.avatarUrl}
-                      alt={client.name}
-                      className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shadow-inner flex-shrink-0"
-                    />
-                    <div>
-                      <h4 className="text-sm font-bold text-slate-900 leading-snug">
-                        {client.name} {client.partnerName ? `& ${client.partnerName}` : ''}
-                      </h4>
-                      <span className="text-xs text-teal-700 font-semibold block">
-                        {client.eventType}
-                      </span>
-                    </div>
-                  </div>
-
-                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full whitespace-nowrap ${badge.bg}`}>
+                {/* Header Card with Session Badge & Status */}
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-teal-50 text-teal-900 border-2 border-teal-600 shadow-xs">
+                    {client.eventType}
+                  </span>
+                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${badge.bg}`}>
                     {badge.label}
                   </span>
+                </div>
+
+                {/* Linha verde-azulada mais grossa para destacar visualmente cada cliente/lead */}
+                <div className="h-1.5 w-full bg-gradient-to-r from-teal-600 via-teal-500 to-teal-300 rounded-full" />
+
+                {/* Client Avatar and Names */}
+                <div className="flex items-center gap-3 pt-0.5">
+                  <img
+                    src={client.avatarUrl}
+                    alt={client.name}
+                    className="w-12 h-12 rounded-2xl object-cover border border-slate-200 shadow-inner flex-shrink-0"
+                  />
+                  <div>
+                    <h4 className="text-sm font-bold text-slate-900 leading-snug">
+                      {client.name} {client.partnerName ? `& ${client.partnerName}` : ''}
+                    </h4>
+                    <span className="text-xs text-slate-500 font-medium block">
+                      Cadastrado em {client.createdAt}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Details */}

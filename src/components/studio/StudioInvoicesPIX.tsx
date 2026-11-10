@@ -125,7 +125,7 @@ export const StudioInvoicesPIX: React.FC<StudioInvoicesPIXProps> = ({ clients })
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4">
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 border-t-4 border-t-teal-600 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
             <CheckCircle2 className="w-6 h-6" />
           </div>
@@ -138,7 +138,7 @@ export const StudioInvoicesPIX: React.FC<StudioInvoicesPIXProps> = ({ clients })
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4">
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 border-t-4 border-t-teal-600 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600">
             <Clock className="w-6 h-6" />
           </div>
@@ -151,7 +151,7 @@ export const StudioInvoicesPIX: React.FC<StudioInvoicesPIXProps> = ({ clients })
           </div>
         </div>
 
-        <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-4">
+        <div className="p-5 rounded-2xl bg-white border border-slate-200 border-t-4 border-t-teal-600 shadow-sm flex items-center gap-4">
           <div className="w-12 h-12 rounded-2xl bg-teal-50 border border-teal-200 flex items-center justify-center text-teal-600">
             <DollarSign className="w-6 h-6" />
           </div>
@@ -186,109 +186,106 @@ export const StudioInvoicesPIX: React.FC<StudioInvoicesPIXProps> = ({ clients })
         </button>
       </div>
 
-      {/* Invoices Table */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Parcelas & Faturas ({invoices.length})
-          </span>
-          <span className="text-xs text-slate-400">
-            Pix Dinâmico Banco Central
-          </span>
-        </div>
-
-        <div className="divide-y divide-slate-100">
-          {invoices.map(inv => {
-            const isPago = inv.status === 'pago';
-            return (
-              <div
-                key={inv.id}
-                className="p-5 hover:bg-slate-50/80 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4"
-              >
-                <div className="flex items-start gap-4">
-                  <div
-                    className={`w-11 h-11 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+      {/* Invoices Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {invoices.map(inv => {
+          const isPago = inv.status === 'pago';
+          return (
+            <div
+              key={inv.id}
+              className="p-5 rounded-3xl bg-white border border-slate-200 border-t-4 border-t-teal-600 shadow-sm flex flex-col justify-between space-y-4 hover:border-teal-500 hover:shadow-md transition-all relative overflow-hidden group"
+            >
+              <div className="space-y-3">
+                {/* Header Card with Parcela Badge & Status */}
+                <div className="flex items-center justify-between">
+                  <span className="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-teal-50 text-teal-900 border-2 border-teal-600 shadow-xs">
+                    PIX • Parcela {inv.installmentNumber}/{inv.totalInstallments}
+                  </span>
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full ${
                       isPago
-                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
-                        : 'bg-amber-50 text-amber-600 border border-amber-200'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : 'bg-amber-100 text-amber-800'
                     }`}
                   >
-                    <QrCode className="w-5 h-5" />
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2.5">
-                      <h4 className="text-sm font-bold text-slate-900">
-                        {inv.clientName}
-                      </h4>
-                      <span
-                        className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
-                          isPago
-                            ? 'bg-emerald-100 text-emerald-800'
-                            : 'bg-amber-100 text-amber-800'
-                        }`}
-                      >
-                        {isPago ? 'Pago via PIX' : 'A Vencer'}
-                      </span>
-                      <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-                        Parcela {inv.installmentNumber}/{inv.totalInstallments}
-                      </span>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
-                      <span>Descrição: <b>{inv.description}</b></span>
-                      <span>•</span>
-                      <span>Vencimento: <b>{inv.dueDate}</b></span>
-                      <span>•</span>
-                      <span>Valor: <b className="text-teal-700 text-sm">R$ {inv.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</b></span>
-                    </div>
-
-                    {isPago && inv.paidAt && (
-                      <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 pt-0.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Liquidado em {inv.paidAt}</span>
-                      </div>
-                    )}
-                  </div>
+                    {isPago ? '✓ Liquidado' : 'Aguardando PIX'}
+                  </span>
                 </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-2 self-end md:self-center">
-                  <button
-                    onClick={() => setSelectedInvoice(inv)}
-                    className="px-3.5 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold text-xs flex items-center gap-1.5 transition-colors"
-                  >
-                    <QrCode className="w-3.5 h-3.5 text-slate-500" />
-                    <span>Ver PIX</span>
-                  </button>
+                {/* Linha verde-azulada mais grossa para destacar a cobrança */}
+                <div className="h-1.5 w-full bg-gradient-to-r from-teal-600 via-teal-500 to-teal-300 rounded-full" />
 
-                  {!isPago && (
-                    <>
-                      <a
-                        href={getWhatsAppReminderLink(inv)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 font-semibold text-xs flex items-center gap-1.5 transition-colors"
-                        title="Enviar lembrete amigável no WhatsApp"
-                      >
-                        <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>Lembrete WhatsApp</span>
-                      </a>
+                <div>
+                  <h4 className="text-base font-bold text-slate-900 leading-snug">
+                    {inv.clientName}
+                  </h4>
+                  <p className="text-xs text-teal-700 font-semibold mt-0.5">
+                    {inv.description}
+                  </p>
+                </div>
 
-                      <button
-                        onClick={() => handleMarkAsPaid(inv.id)}
-                        className="px-3.5 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-sm"
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>Confirmar Pagamento</span>
-                      </button>
-                    </>
+                {/* Amount and Due Date Box */}
+                <div className="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1.5 text-xs text-slate-700">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-500 font-medium">Valor da Parcela:</span>
+                    <span className="text-sm font-extrabold text-teal-700">
+                      R$ {inv.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 pt-1 border-t border-slate-200/60">
+                    <Clock className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                    <span>Vencimento: <b>{inv.dueDate}</b></span>
+                  </div>
+                  {isPago && inv.paidAt && (
+                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 font-semibold pt-0.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Liquidado em {inv.paidAt}</span>
+                    </div>
                   )}
                 </div>
               </div>
-            );
-          })}
-        </div>
+
+              {/* Actions */}
+              <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                <button
+                  onClick={() => setSelectedInvoice(inv)}
+                  className="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                >
+                  <QrCode className="w-3.5 h-3.5 text-teal-600" />
+                  <span>Ver PIX</span>
+                </button>
+
+                {!isPago ? (
+                  <>
+                    <button
+                      onClick={() => handleMarkAsPaid(inv.id)}
+                      className="px-3 py-1.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs flex items-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <CheckCircle2 className="w-3.5 h-3.5" />
+                      <span>Dar Baixa</span>
+                    </button>
+
+                    <a
+                      href={getWhatsAppReminderLink(inv)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200 font-bold text-xs flex items-center gap-1.5 transition-colors"
+                      title="Enviar lembrete amigável no WhatsApp"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>WhatsApp</span>
+                    </a>
+                  </>
+                ) : (
+                  <span className="text-[11px] text-emerald-700 font-bold flex items-center gap-1 py-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>Confirmado no Caixa</span>
+                  </span>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
 
       {/* MODAL: VER QR CODE PIX DA FATURA */}
