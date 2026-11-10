@@ -8,6 +8,7 @@ import { GalleryLightbox } from './GalleryLightbox';
 import { DownloadModal } from './DownloadModal';
 import { SelectionApprovalModal } from './SelectionApprovalModal';
 import { PhotographerManagerView } from './PhotographerManagerView';
+import { GalleryMusicPlayer } from './GalleryMusicPlayer';
 
 interface ClientGalleryPageProps {
   onBackToHome: () => void;
@@ -207,6 +208,9 @@ export const ClientGalleryPage: React.FC<ClientGalleryPageProps> = ({ onBackToHo
             }}
             onToggleFavorite={handleToggleFavorite}
           />
+
+          {/* 4. Ambient Wedding Instrumental Soundtrack & Player */}
+          <GalleryMusicPlayer />
         </main>
       ) : (
         <main className="flex-1 bg-slate-100/70 dark:bg-brand-dark">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Volume2, VolumeX, Calendar, MapPin, ChevronDown, Heart, ShieldCheck, Download, Share2 } from 'lucide-react';
 import { GalleryConfig } from './galleryData';
 
@@ -8,6 +8,10 @@ interface GalleryHeroCoverProps {
   onExplore: () => void;
   onOpenDownload: () => void;
   onOpenSelectionModal: () => void;
+  isPlayingAudio?: boolean;
+  isMutedAudio?: boolean;
+  onTogglePlayAudio?: () => void;
+  onToggleMuteAudio?: () => void;
 }
 
 export const GalleryHeroCover: React.FC<GalleryHeroCoverProps> = ({
@@ -15,9 +19,35 @@ export const GalleryHeroCover: React.FC<GalleryHeroCoverProps> = ({
   favoritesCount,
   onExplore,
   onOpenDownload,
-  onOpenSelectionModal
+  onOpenSelectionModal,
+  isPlayingAudio: propIsPlaying,
+  onTogglePlayAudio
 }) => {
-  const [isMuted, setIsMuted] = useState(true);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(propIsPlaying ?? false);
+
+  useEffect(() => {
+    const handleState = (e: any) => {
+      if (e.detail && typeof e.detail.isPlaying === 'boolean') {
+        setIsPlayingAudio(e.detail.isPlaying);
+      }
+    };
+    window.addEventListener('gallery-audio-state-change', handleState);
+    return () => window.removeEventListener('gallery-audio-state-change', handleState);
+  }, []);
+
+  useEffect(() => {
+    if (typeof propIsPlaying === 'boolean') {
+      setIsPlayingAudio(propIsPlaying);
+    }
+  }, [propIsPlaying]);
+
+  const handleToggle = () => {
+    if (onTogglePlayAudio) {
+      onTogglePlayAudio();
+    } else {
+      window.dispatchEvent(new CustomEvent('gallery-audio-toggle'));
+    }
+  };
 
   return (
     <div className="relative min-h-[85vh] sm:min-h-[90vh] w-full flex flex-col justify-between overflow-hidden bg-slate-950">
@@ -41,21 +71,29 @@ export const GalleryHeroCover: React.FC<GalleryHeroCoverProps> = ({
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Ambient Music Mockup Toggle */}
+          {/* Ambient Music Control Button */}
           <button
-            onClick={() => setIsMuted(!isMuted)}
-            className="px-3 py-1.5 rounded-full bg-slate-950/60 backdrop-blur-md border border-white/10 hover:border-brand-mint/40 text-xs text-white flex items-center gap-2 transition-all"
-            title="Música ambiente"
+            onClick={handleToggle}
+            className={`px-3.5 py-1.5 rounded-full backdrop-blur-md border text-xs text-white flex items-center gap-2 transition-all cursor-pointer ${
+              isPlayingAudio
+                ? 'bg-teal-500/30 border-teal-400 text-teal-200 shadow-lg shadow-teal-500/20'
+                : 'bg-slate-950/60 border-white/15 text-slate-300 hover:border-white/30'
+            }`}
+            title={isPlayingAudio ? "Pausar trilha sonora" : "Tocar trilha sonora"}
           >
-            {isMuted ? (
+            {isPlayingAudio ? (
               <>
-                <VolumeX className="w-3.5 h-3.5 text-slate-400" />
-                <span className="hidden sm:inline text-[11px] text-slate-300">Música Desligada</span>
+                <div className="flex items-end gap-0.5 h-3">
+                  <span className="w-0.5 bg-teal-400 rounded-full animate-pulse h-full" />
+                  <span className="w-0.5 bg-teal-400 rounded-full animate-pulse h-2/3 [animation-delay:150ms]" />
+                  <span className="w-0.5 bg-teal-400 rounded-full animate-pulse h-5/6 [animation-delay:300ms]" />
+                </div>
+                <span className="text-[11px] font-bold text-teal-200">Trilha Ativa</span>
               </>
             ) : (
               <>
-                <Volume2 className="w-3.5 h-3.5 text-brand-mint animate-pulse" />
-                <span className="hidden sm:inline text-[11px] text-brand-mint font-semibold">Tocando Trilha Sonora</span>
+                <VolumeX className="w-3.5 h-3.5 text-slate-400" />
+                <span className="text-[11px] text-slate-300 font-medium">Trilha Pausada</span>
               </>
             )}
           </button>
