@@ -7,9 +7,10 @@ interface NavbarProps {
   onOpenStore?: () => void;
   onOpenStudio?: () => void;
   onOpenPortfolio?: () => void;
+  onOpenExamples?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenSimulator, onOpenClientGallery, onOpenStore, onOpenStudio, onOpenPortfolio }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenSimulator, onOpenClientGallery, onOpenStore, onOpenStudio, onOpenPortfolio, onOpenExamples }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
 
@@ -152,6 +153,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSimulator, onOpenClientGal
               Galerias
             </a>
 
+            {onOpenExamples && (
+              <button
+                type="button"
+                onClick={onOpenExamples}
+                className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-brand-mint transition-colors"
+              >
+                Exemplos
+              </button>
+            )}
+
             <a href="#loja" className="text-sm font-semibold text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-brand-mint transition-colors">
               Loja & Lab
             </a>
@@ -206,6 +217,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSimulator, onOpenClientGal
               >
                 <Globe className="w-3.5 h-3.5 text-teal-600" />
                 <span>Portfólio Demo</span>
+              </button>
+            )}
+
+            {/* Direct Button to open Pixieset-style Examples */}
+            {onOpenExamples && (
+              <button
+                onClick={onOpenExamples}
+                className="text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 flex items-center gap-1.5 px-3 py-2 rounded-xl transition-all shadow-sm"
+                title="Abrir Vitrine de Exemplos de Galerias (Estilo Pixieset)"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Exemplos</span>
               </button>
             )}
 
@@ -315,6 +338,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenSimulator, onOpenClientGal
                 >
                   <Globe className="w-4 h-4 text-teal-600" />
                   <span>Ver Portfólio & Mini-Site (Demo)</span>
+                </button>
+              )}
+              {onOpenExamples && (
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenExamples();
+                  }}
+                  className="w-full text-left px-3 py-2 text-sm text-slate-800 font-bold flex items-center gap-2 hover:bg-slate-50 rounded-lg"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span>Exemplos de Galeria (Estilo Pixieset)</span>
                 </button>
               )}
               <a
